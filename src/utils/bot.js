@@ -107,8 +107,9 @@ export async function handleUpdate(update) {
         }
 
         // Save trade to Firestore with detailed error handling
+        let tradeData = null;
         try {
-          const tradeData = {
+          tradeData = {
             userId,
             username,
             usdtAmount: parseFloat(formattedUsdt.replace(/,/g, '')),
@@ -124,7 +125,7 @@ export async function handleUpdate(update) {
             message: error.message,
             code: error.code,
             stack: error.stack,
-            tradeData: JSON.stringify(tradeData),
+            tradeData: tradeData ? JSON.stringify(tradeData) : 'No disponible',
           });
           await bot.sendMessage(chatId, 'Trade confirmado, pero ocurrió un error al guardarlo. Contacta al administrador.');
         }
