@@ -106,15 +106,23 @@ export async function handleUpdate(update) {
           );
         }
 
-        // Save trade to Firestore
-        await adminDb.collection('trades').add({
-          userId,
-          username,
-          usdtAmount: parseFloat(formattedUsdt.replace(/,/g, '')),
-          mxnAmount: parseFloat(formattedMxn.replace(/,/g, '')),
-          rate: parseFloat(formattedRate.replace(/,/g, '')),
-          timestamp: adminDb.FieldValue.serverTimestamp(),
-        });
+        // Save trade to Firestore with error handling
+        try {
+          const tradeData = {
+            userId,
+            username,
+            usdtAmount: parseFloat(formattedUsdt.replace(/,/g, '')),
+            mxnAmount: parseFloat(formattedMxn.replace(/,/g, '')),
+            rate: parseFloat(formattedRate.replace(/,/g, '')),
+            timestamp: adminDb.FieldValue.serverTimestamp(),
+          };
+          console.log('Guardando trade en Firestore:', tradeData); // Log para depuración
+          await adminDb.collection('trades').add(tradeData);
+          console.log('Trade guardado exitosamente');
+        } catch (error) {
+          console.error('Error al guardar el trade en Firestore:', error);
+          await bot.sendMessage(chatId, 'Trade confirmado, pero ocurrió un error al guardarlo. Contacta al administrador.');
+        }
 
         // Limpiar estado inmediatamente
         delete userState[userId];
@@ -124,7 +132,7 @@ export async function handleUpdate(update) {
       }
     } finally {
       await bot.answerCallbackQuery(callbackId);
-      // Limpiar processedCallbacks después de un tiempo para evitar acumulación
+      // Limpiar processedCallbacks después de un tiempo
       setTimeout(() => processedCallbacks.delete(callbackKey), 60000);
     }
     return;
