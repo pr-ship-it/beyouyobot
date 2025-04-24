@@ -106,7 +106,7 @@ export async function handleUpdate(update) {
           );
         }
 
-        // Save trade to Firestore with error handling
+        // Save trade to Firestore with detailed error handling
         try {
           const tradeData = {
             userId,
@@ -116,11 +116,16 @@ export async function handleUpdate(update) {
             rate: parseFloat(formattedRate.replace(/,/g, '')),
             timestamp: adminDb.FieldValue.serverTimestamp(),
           };
-          console.log('Guardando trade en Firestore:', tradeData); // Log para depuración
-          await adminDb.collection('trades').add(tradeData);
-          console.log('Trade guardado exitosamente');
+          console.log('Intentando guardar trade en Firestore:', JSON.stringify(tradeData));
+          const tradeRef = await adminDb.collection('trades').add(tradeData);
+          console.log('Trade guardado exitosamente con ID:', tradeRef.id);
         } catch (error) {
-          console.error('Error al guardar el trade en Firestore:', error);
+          console.error('Error al guardar el trade en Firestore:', {
+            message: error.message,
+            code: error.code,
+            stack: error.stack,
+            tradeData: JSON.stringify(tradeData),
+          });
           await bot.sendMessage(chatId, 'Trade confirmado, pero ocurrió un error al guardarlo. Contacta al administrador.');
         }
 
@@ -194,4 +199,5 @@ export async function handleUpdate(update) {
       userState[userId] = { step: 'awaiting_confirmation' };
     }
   }
+}
 }
