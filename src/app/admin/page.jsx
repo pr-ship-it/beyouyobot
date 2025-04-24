@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+iimport { useRouter } from 'next/navigation';
 
 import "../../styles/admin.css"
 export default function Admin() {
@@ -131,6 +131,8 @@ export default function Admin() {
       </button>
 
       <section className="admin-dashboard__section admin-dashboard__rate-section">
+       
+       <div className="admin-dashboard-flex">
         <div className="admin-dashboard__rate-container">
           <div className="admin-dashboard__rate-form">
             <h2 className="admin-dashboard__subtitle">Establecer Tasa de Cambio</h2>
@@ -146,12 +148,13 @@ export default function Admin() {
               />
               <button type="submit" className="admin-dashboard__button">Actualizar Tasa</button>
             </form>
-          </div>
+    
           <div className="admin-dashboard__current-rate">
             <h3 className="admin-dashboard__current-rate-title">Tasa Actual</h3>
             <p className="admin-dashboard__current-rate-value">
               {currentRate !== null ? `${currentRate} MXN/USDT` : 'Cargando...'}
             </p>
+            </div>
           </div>
         </div>
       </section>
@@ -183,7 +186,7 @@ export default function Admin() {
           ))}
         </ul>
       </section>
-
+      </div>
       <section className="admin-dashboard__section">
         <h2 className="admin-dashboard__subtitle">Historial de Transacciones</h2>
         <ul className="admin-dashboard__list">
