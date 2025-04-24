@@ -1,5 +1,5 @@
 import TelegramBot from 'node-telegram-bot-api';
-import { adminDb } from '../lib/firebase.js';
+import { adminDb, admin } from '../lib/firebase.js';
 
 const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN);
 const userState = {};
@@ -114,7 +114,7 @@ export async function handleUpdate(update) {
             usdtAmount: parseFloat(formattedUsdt.replace(/,/g, '')),
             mxnAmount: parseFloat(formattedMxn.replace(/,/g, '')),
             rate: parseFloat(formattedRate.replace(/,/g, '')),
-            timestamp: adminDb.FieldValue.serverTimestamp(),
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
           };
           console.log('Intentando guardar trade en Firestore:', JSON.stringify(tradeData));
           const tradeRef = await adminDb.collection('trades').add(tradeData);
@@ -199,5 +199,4 @@ export async function handleUpdate(update) {
       userState[userId] = { step: 'awaiting_confirmation' };
     }
   }
-}
 }
