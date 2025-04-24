@@ -232,8 +232,21 @@ body {
   background-color: #6b1a8c;
 }
 
+.admin-dashboard__rate-form{
+  background-color: #dfdfdfa9;
+  border-radius: 10px;
+}
+
 .admin-dashboard__section {
   margin-bottom: 2rem;
+
+}
+
+.admin-dashboard-flex{
+  display: flex;
+  gap: 20px;
+  flex-wrap: nowrap;
+
 }
 
 .admin-dashboard__subtitle {
