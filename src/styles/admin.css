@@ -66,6 +66,9 @@ body {
 
 .admin-dashboard {
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -94,6 +97,10 @@ body {
 
 .admin-dashboard__section {
   margin-bottom: 2rem;
+  max-width: 500px;
+  background-color: rgba(240, 248, 255, 0.555);
+  padding: 10px;
+  border-radius: 10px;
 }
 
 .admin-dashboard__subtitle {
@@ -233,7 +240,6 @@ body {
 }
 
 .admin-dashboard__rate-form{
-  background-color: #dfdfdfa9;
   border-radius: 10px;
 }
 
@@ -246,6 +252,8 @@ body {
   display: flex;
   gap: 20px;
   flex-wrap: nowrap;
+  justify-content: center;
+  
 
 }
 
@@ -260,14 +268,6 @@ body {
   flex-direction: column;
   gap: 1rem;
   max-width: 400px;
-}
-
-.admin-dashboard__section {
-  margin-bottom: 2rem;
-  max-width: 500px;
-  background-color: rgba(240, 248, 255, 0.555);
-  padding: 10px;
-  border-radius: 10px;
 }
 
 .admin-dashboard__input,
