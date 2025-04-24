@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function Admin() {
   const [password, setPassword] = useState('');
   const [rate, setRate] = useState('');
+  const [currentRate, setCurrentRate] = useState(null); // Estado para la tasa actual
   const [adminId, setAdminId] = useState('');
   const [action, setAction] = useState('add');
   const [trades, setTrades] = useState([]);
@@ -21,8 +22,24 @@ export default function Admin() {
       setPassword(storedPassword);
       fetchAdmins(storedPassword);
       fetchTrades(storedPassword);
+      fetchCurrentRate(storedPassword); // Nueva función para obtener la tasa actual
     }
   }, [router]);
+
+  const fetchCurrentRate = async (pwd) => {
+    try {
+      const res = await fetch(`/api/admin/rate?password=${encodeURIComponent(pwd)}`);
+      if (res.ok) {
+        const { rate } = await res.json();
+        setCurrentRate(rate);
+      } else {
+        const { error } = await res.json();
+        setError(error);
+      }
+    } catch (err) {
+      setError('Error al obtener la tasa actual');
+    }
+  };
 
   const fetchAdmins = async (pwd) => {
     try {
@@ -64,6 +81,8 @@ export default function Admin() {
       });
       if (res.ok) {
         setError('');
+        setCurrentRate(parseFloat(rate)); // Actualizar la tasa actual tras enviar
+        setRate(''); // Limpiar el input
         alert('Tasa actualizada');
       } else {
         const { error } = await res.json();
@@ -109,20 +128,30 @@ export default function Admin() {
         Cerrar Sesión
       </button>
 
-      <section className="admin-dashboard__section">
-        <h2 className="admin-dashboard__subtitle">Establecer Tasa de Cambio</h2>
-        <form className="admin-dashboard__form" onSubmit={handleRateSubmit}>
-          <input
-            type="number"
-            step="0.001"
-            className="admin-dashboard__input"
-            value={rate}
-            onChange={(e) => setRate(e.target.value)}
-            placeholder="Ingresa la tasa USDT a MXN"
-            required
-          />
-          <button type="submit" className="admin-dashboard__button">Actualizar Tasa</button>
-        </form>
+      <section className="admin-dashboard__section admin-dashboard__rate-section">
+        <div className="admin-dashboard__rate-container">
+          <div className="admin-dashboard__rate-form">
+            <h2 className="admin-dashboard__subtitle">Establecer Tasa de Cambio</h2>
+            <form className="admin-dashboard__form" onSubmit={handleRateSubmit}>
+              <input
+                type="number"
+                step="0.001"
+                className="admin-dashboard__input"
+                value={rate}
+                onChange={(e) => setRate(e.target.value)}
+                placeholder="Ingresa la tasa USDT a MXN"
+                required
+              />
+              <button type="submit" className="admin-dashboard__button">Actualizar Tasa</button>
+            </form>
+          </div>
+          <div className="admin-dashboard__current-rate">
+            <h3 className="admin-dashboard__current-rate-title">Tasa Actual</h3>
+            <p className="admin-dashboard__current-rate-value">
+              {currentRate !== null ? `${currentRate} MXN/USDT` : 'Cargando...'}
+            </p>
+          </div>
+        </div>
       </section>
 
       <section className="admin-dashboard__section">
