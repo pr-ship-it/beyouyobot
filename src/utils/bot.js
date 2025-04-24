@@ -13,15 +13,26 @@ export async function handleUpdate(update) {
   const data = callbackQuery?.data;
 
   // Fetch current rate and admin IDs from Firestore
-  const rateDoc = await adminDb.collection('settings').doc('exchangeRate').get();
-  const usdtToMxnRate = rateDoc.exists ? rateDoc.data().rate : 20.421;
+  const rateDoc = await adminDb.collection('config').doc('rate').get();
+  const usdtToMxnRate = rateDoc.exists ? rateDoc.data().value : null;
   const adminDoc = await adminDb.collection('settings').doc('admins').get();
   const adminIds = adminDoc.exists ? adminDoc.data().ids : ['8099115476'];
+
+  // Handle case when rate is not set
+  if (!usdtToMxnRate) {
+    if (text || callbackQuery) {
+      await bot.sendMessage(chatId, 'No se ha configurado una tasa de cambio. Contacta al administrador.');
+    }
+    if (callbackQuery) {
+      await bot.answerCallbackQuery(callbackQuery.id);
+    }
+    return;
+  }
 
   // Handle /start command
   if (text === '/start') {
     userState[userId] = { step: 'initial' };
-    await bot.sendMessage(chatId, 'Hola ¿Qué deseas cotizar?', {
+    await bot.sendMessage(chatId, `Hola, bienvenido a BeYouYoBot!\nTasa actual: ${usdtToMxnRate.toFixed(3)} MXN/USDT\n¿Qué deseas cotizar?`, {
       reply_markup: {
         inline_keyboard: [[{ text: 'Cotizar USDT', callback_data: 'quote_usdt' }]],
       },
@@ -83,7 +94,7 @@ export async function handleUpdate(update) {
         usdtAmount: parseFloat(formattedUsdt.replace(/,/g, '')),
         mxnAmount: parseFloat(formattedMxn.replace(/,/g, '')),
         rate: parseFloat(formattedRate.replace(/,/g, '')),
-        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+        timestamp: adminDb.FieldValue.serverTimestamp(),
       });
 
       delete userState[userId];
