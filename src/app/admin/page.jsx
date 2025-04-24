@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-iimport { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import "../../styles/admin.css"
 export default function Admin() {
