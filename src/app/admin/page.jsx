@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import "../../styles/admin.css"
+import "../../../styles/admin.css"
 export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -27,7 +27,8 @@ export default function Login() {
 
   return (
     <div className="admin-login">
-      <h1 className="admin-login__title">Login de Administrador</h1>
+     <img className="admin-logo" src="https://res.cloudinary.com/dllkefj8m/image/upload/v1745512695/b_l17kf4.png"/>
+     
       <form className="admin-login__form" onSubmit={handleSubmit}>
         <input
           type="password"
