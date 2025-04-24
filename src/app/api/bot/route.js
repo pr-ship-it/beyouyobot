@@ -1,4 +1,4 @@
-import { handleUpdate } from '../../utils/bot.js';
+import { handleUpdate } from '../../../utils/bot';
 
    export default async function handler(req, res) {
      if (req.method === 'POST') {
