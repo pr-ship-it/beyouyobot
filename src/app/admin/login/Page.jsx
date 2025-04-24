@@ -21,6 +21,7 @@ export default function Login() {
       }
     } catch (err) {
       setError('Error del servidor');
+      
     }
   };
 
